@@ -22,21 +22,23 @@ def pedir_datos():
     lista_datos = []
 
     while n == 0:
-        v_s = float(input("Ingresa el voltaje de la fuente VS: "))
-        v_r = float(input("Ingresa el voltaje de la resistencia VR: "))
-        v_z_load = float(input("Ingresa el voltaje de la carga inductiva VZLoad: "))
-        r = float(input("Ingresa el valor de la resistencia R: "))
+        print(' = '*50)
+        v_s = float(input(" Ingresa el voltaje de la fuente VS: "))
+        v_r = float(input(" Ingresa el voltaje de la resistencia VR: "))
+        v_z_load = float(input(" Ingresa el voltaje de la carga inductiva VZLoad: "))
+        r = float(input(" Ingresa el valor de la resistencia R: "))
+        print(' = '*50)
 
         # Validar que NO OCURRA VS > VR + VZLoad 
 
         aux = v_r + v_z_load
 
         if v_s > aux:
-            print("\nPor favor ingrese datos que NO SEAN VS > VR + VZLoad \n")
+            print("\n Por favor ingrese datos que NO SEAN VS > VR + VZLoad \n")
             n = 0
         
         else:
-            print("\nDatos aceptados \n")
+            print("\n Datos aceptados \n")
             n = 1
 
     lista_datos.append(v_s)
@@ -207,7 +209,14 @@ def impedancia(mag_v, mag_i, anguloV, anguloI):
 
     Z_complejo = Vz_complejo/Ir_complejo
 
-    print(Z_complejo)
+    print(' = '*50)
+    print(' Por ley de Ohm, la corriente y el voltaje \n en la resistencia son las mismas (R=1) \n Así, se tiene que:')
+    print(f' I = Vr/R \n I = {Ir_complejo:.2f} / 1 ohm \n I = {Ir_complejo:.2f}')
+    print(' = '*50)
+    print(' Por Ley de Ohm en la impedancia, \n dado que la corriente es la misma (circuito serie). ')
+    print(f' Con VL = {Vz_complejo:.2f} \n y I = {Ir_complejo:.2f}, \n se tiene que:')
+    print(' ZL = VL/I')
+    print(f' ZL = {Z_complejo:.2f}')
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Programa Principal
