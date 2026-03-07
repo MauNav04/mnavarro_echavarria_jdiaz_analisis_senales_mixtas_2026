@@ -97,7 +97,7 @@ def punto_intermedio(r1, r2, x1, x2, y1, y2):
 # con: h = sqrt(r_1^2 - a^2)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-def encontrar_intersecciones(r1, a, x_intermedio, y_intermedio, x1, x2, y2, y1, d):
+def encontrar_intersecciones(r1, r2, a, x_intermedio, y_intermedio, x1, x2, y2, y1, d):
 
     h = np.sqrt(r1**2 - a**2)
 
@@ -111,13 +111,53 @@ def encontrar_intersecciones(r1, a, x_intermedio, y_intermedio, x1, x2, y2, y1, 
     plt.scatter(xi1, yi1) 
     plt.scatter(xi2, yi2)
 
-    # dibujar linea hacia esas intersecciones
-    plt.plot([x1, xi1], [y1, yi1])
-    plt.plot([x1, xi2], [y1, yi2])
-    plt.plot([x2, xi1], [y2, yi1])
-    plt.plot([x2, xi2], [y2, yi2])
+    # puntos medios
+    xm11 = ( x1 + xi1 ) / 2
+    xm12 = ( x1 + xi2 ) / 2
+    xm21 = ( x2 + xi1 ) / 2
+    xm22 = ( x2 + xi2 ) / 2
 
-    return xi1, yi1, xi2, yi2
+    ym11 = ( y1 + yi1 ) / 2
+    ym12 = ( y1 + yi2 ) / 2
+    ym21 = ( y2 + yi1 ) / 2
+    ym22 = ( y2 + yi2 ) / 2
+
+    # Angulos requeridos (usando arctan(y/x))
+
+    #x_vector11 = ( xi1 - x1 ) 
+    #x_vector21 = ( xi1 - x2 ) 
+    x_vector12 = ( x1 - xi2 ) 
+    x_vector22 = ( xi2 - x2 ) 
+
+    #y_vector11 = ( yi1 - y1 ) 
+    #y_vector21 = ( y2 - yi1 ) 
+    y_vector12 = ( yi2 - y1 ) 
+    y_vector22 = ( yi2 - y2 )
+
+    #theta11 = np.atan2(y_vector11, x_vector11)
+    #theta21 = np.atan2(y_vector21, x_vector21)
+    theta12 = np.atan2(y_vector12, x_vector12)
+    theta22 = np.atan2(y_vector22, x_vector22)
+
+    anguloVz = 0 - np.degrees(theta12) # -0 porque el vector va en la dirección contraria
+    anguloVr = np.degrees(theta22)
+
+    # Dibujar linea hacia esas intersecciones
+    # Circulo en 2,0
+    plt.plot([x1, xi1], [y1, yi1]) # VECTOR CAPACITIVO Vz
+    plt.text(xm11, ym11, 'Vz en caso capacitivo', ha='center', va='center')
+
+    plt.plot([xi2, x1], [yi2, y1]) # VECTOR INDUCTIVO Vz
+    plt.text(xm12, ym12, f'VZload = {r1}, ángulo: {anguloVz:.2f}', ha='center', va='center')
+
+    # Circulo en 0,0
+    plt.plot([x2, xi1], [y2, yi1]) # VECTOR CAPACITIVO Vr
+    plt.text(xm21, ym21, 'Vr en caso capcitivo', ha='center', va='center')
+
+    plt.plot([x2, xi2], [y2, yi2]) # VECTOR INDUCTIVO Vr
+    plt.text(xm22, ym22, f'VR = {r2}, ángulo: {anguloVr:.2f}', ha='center', va='center')
+
+    return xi1, yi1, xi2, yi2, anguloVz, anguloVr
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Función para calcular impedancia
@@ -126,18 +166,39 @@ def encontrar_intersecciones(r1, a, x_intermedio, y_intermedio, x1, x2, y2, y1, 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Programa Principal
+# Comando run: python3 simulador_circuito.py
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 if __name__ == '__main__':
-    lista_datos = pedir_datos() # 0 VS, 1 VR, 2 VZload, 3 R
+    lista_datos = pedir_datos() # [0] VS, [1] VR, [2] VZload, [3] R
 
-    a, x_intermedio, y_intermedio, d = punto_intermedio(lista_datos[2], lista_datos[1], 
-                                       lista_datos[0], 0, 0, 0) # r1, r2, x1 = 2, resto 0
-    
-    xi1, yi1, xi2, yi2 = encontrar_intersecciones(lista_datos[2], a, x_intermedio, y_intermedio, lista_datos[0], 0, 0, 0, d) # r1, ... , centro1, centro2, d
+    plt.plot([0, lista_datos[0]], [0,0])
 
     dibujar_circulo(lista_datos[0], 0, lista_datos[2]) # circulo 1 -> VZload, centro 2,0 
     dibujar_circulo(0, 0, lista_datos[1]) # circulo 2 -> VR, centro 0,0
+
+    # Punto intermedio
+    a, x_intermedio, y_intermedio, d = punto_intermedio(lista_datos[2], lista_datos[1], 
+                                       lista_datos[0], 0, 0, 0) # r1, r2, x1 = 2, resto 0
+    
+    # Lineas hacia interseccion
+    xi1, yi1, xi2, yi2, anguloVz, anguloVr = encontrar_intersecciones(lista_datos[2], lista_datos[1], a, x_intermedio, y_intermedio, 
+                                                  lista_datos[0], 0, 0, 0, d) # r1, r2, ... , centro1, centro2, d
+    
+    # Corriente V/R --> Impedancia: V/I
+    # Como R = 1, V = I
+
+    VR_rad = np.radians(anguloVr)
+    VZ_rad = np.radians(anguloVz)
+
+    # V = magnitud * (cos(theta) + j*sin(theta))
+
+    Vz_complejo = lista_datos[2] * (np.cos(VZ_rad) + 1j*np.sin(VZ_rad))
+    Ir_complejo = lista_datos[1] * (np.cos(VR_rad) + 1j*np.sin(VR_rad))
+
+    Z_complejo = Vz_complejo/Ir_complejo
+
+    print(Z_complejo)
 
     plt.title("Gráfico: Circuito RL serie en CA") # titulo global
     plt.xlabel("Eje Real (Re)") # titulo de eje
