@@ -156,7 +156,7 @@ def encontrar_intersecciones(r1, r2, a, x_intermedio, y_intermedio, x1, x2, y2, 
     plt.text(xm11+0.5, ym11, 'Vz en caso capacitivo', ha='center', va='center')
 
     plt.plot([xi2, x1], [yi2, y1], color='purple') # VECTOR INDUCTIVO Vz
-    plt.text(xm12+0.5, ym12, f'VZload = {r1}, ángulo: {anguloVz:.2f}', ha='center', va='center', color='purple')
+    plt.text(xm12+0.5, ym12, f'VZload = {r1} ∠ {anguloVz:.2f}° V', ha='center', va='center', color='purple')
 
     # LINEA RECTA A PASAR POR VZ
     # Crear la ecuacion
@@ -186,7 +186,7 @@ def encontrar_intersecciones(r1, r2, a, x_intermedio, y_intermedio, x1, x2, y2, 
     plt.text(xm21-0.5, ym21, 'Vr en caso capcitivo', ha='center', va='center')
 
     plt.plot([x2, xi2], [y2, yi2], color = 'orange') # VECTOR INDUCTIVO Vr
-    plt.text(xm22-0.5, ym22, f'VR = {r2}, ángulo: {anguloVr:.2f}', ha='center', va='center', color='orange')
+    plt.text(xm22-0.5, ym22, f'VR = {r2} ∠ {anguloVr:.2f}° V', ha='center', va='center', color='orange')
 
     return xi1, yi1, xi2, yi2, anguloVz, anguloVr
 
@@ -227,7 +227,7 @@ if __name__ == '__main__':
     lista_datos = pedir_datos() # [0] VS, [1] VR, [2] VZload, [3] R
 
     plt.plot([0, lista_datos[0]], [0,0], color='red')
-    plt.text(0.8, -0.1, 'Vs = 2V', ha='center', va='center', color='red')
+    plt.text(0.8, -0.1, 'Vs = 2 ∠ 0° V', ha='center', va='center', color='red')
 
     dibujar_circulo(lista_datos[0], 0, lista_datos[2], "blue") # circulo 1 -> VZload, centro 2,0 
     dibujar_circulo(0, 0, lista_datos[1], "green") # circulo 2 -> VR, centro 0,0
